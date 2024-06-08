@@ -21,31 +21,23 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
-        // collection
+       // collection
         const iconCollection = client.db("demoIconPlugin").collection("icons")
-        app.get("/icons", async (req, res) => {
-            try {
-                const { type } = req.query;
-                let result;
-                if (type === "free" || type === "premium") {
-                    // Fetch icons based on the type
-                    result = await iconCollection.find({ type }).toArray();
-                } else {
-                    // If type is not specified or invalid, fetch all icons
-                    result = await iconCollection.find().toArray();
-                }
-                res.json(result);
-            } catch (error) {
-                console.error("Error fetching icons:", error);
-                res.status(500).json({ error: "Internal server error" });
-            }
-        });
+        const adobeIconCollection = client.db("demoIconPlugin").collection("adobe-icon")
 
+        app.get("/icons", async(req, res)=>{
+            const result = await iconCollection.find().toArray()
+            res.send(result)
+        })
+        app.get("/adobe-icon", async(req,res)=>{
+            const result = await adobeIconCollection.find().toArray()
+            res.send(result)
+        })
 
         // get data in specific
-        app.get("/icon/:id", async (req, res) => {
+        app.get("/icon/:id", async(req, res)=>{
             const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
+            const query = {_id: new ObjectId(id)}
             const result = await iconCollection.findOne(query)
             res.send(result)
         })
